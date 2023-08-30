@@ -1,6 +1,10 @@
+<!-- PHP CONNECTION -->
 <?php
 
 require '../config/database.php';
+
+$sqlPeliculas = "SELECT p.id, p.nombre, p.descripcion, g.nombre AS genero FROM pelicula AS p INNER JOIN genero AS g ON p.id_genero=g.id";
+$peliculas = $conn->query($sqlPeliculas);
 
 ?>
 
@@ -33,20 +37,75 @@ require '../config/database.php';
                     <th>Nombre</th>
                     <th>Descripción</th>
                     <th>Género</th>
+                    <th>Poster</th>
                     <th>Acción</th>
                 </tr>
             </thead>
             <tbody>
+                <?php while ($row_pelicula = $peliculas->fetch_assoc()) { ?>
+                <tr>
+                    <td><?= $row_pelicula['id']; ?></td>
+                    <td><?= $row_pelicula['nombre']; ?></td>
+                    <td><?= $row_pelicula['descripcion']; ?></td>
+                    <td><?= $row_pelicula['genero']; ?></td>
+                    <td></td>
+                    <td>
+                        
+                        <a href="#" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-id="<?= $row_pelicula['id']; ?>" data-bs-target="#editarModal"><i class="fa-solid fa-pen-to-square"></i> Editar</a>
+                        <a href="#" class="btn btn-sm btn-danger"><i class="fa-solid fa-trash"></i> Eliminar</a>
 
+                    </td>
+                </tr>
+                <?php } ?>
             </tbody>
         </table>
     </div>
+
+    <!-- PHP SCRIPTS -->
 
     <?php
         $sqlGenero = "SELECT id, nombre FROM genero";
         $generos = $conn->query($sqlGenero);
     ?>
+    
     <?php include 'nuevoModal.php'; ?>
+    <?php $generos->data_seek(0); ?>
+    <?php include 'editarModal.php'; ?>
+
+    <!-- JS SCRIPTS -->
+
+    <script type="text/javascript">
+        let editarModal = document.getElementById('editarModal')
+
+        editarModal.addEventListener('shown.bs.modal', event => {
+            let button = event.relatedTarget
+            let id = button.getAttribute('data-bs-id')
+
+            let inputId = editarModal.querySelector('.modal-body #id')
+            let inputNombre = editarModal.querySelector('.modal-body #nombre')
+            let inputDescripcion = editarModal.querySelector('.modal-body #descripcion')
+            let inputGenero = editarModal.querySelector('.modal-body #genero')
+
+            let url = "getPelicula.php"
+            let formData = new FormData()
+            formData.append('id', id)
+
+            fetch(url, {
+                method: "POST",
+                body: formData
+            }).then(response => response.json())
+            .then(data => {
+
+                inputId.value = data.id
+                inputNombre.value = data.nombre
+                inputDescripcion.value = data.descripcion
+                inputGenero.value = data.genero
+
+
+            }).catch(err => console.log(err))
+        })
+    </script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </body>
 </html>

@@ -1,13 +1,16 @@
 <!-- Modal -->
-<div class="modal fade" id="nuevoModal" tabindex="-1" aria-labelledby="nuevoModalLabel" aria-hidden="true">
+<div class="modal fade" id="editarModal" tabindex="-1" aria-labelledby="editarModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title fs-5" id="nuevoModalLabel">Agregar registro</h5>
+        <h5 class="modal-title fs-5" id="editarModalLabel">Editar registro</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <form action="guarda.php" method="post" enctype="multipart/form-data">
+
+            <input type="hidden" name="id" id="id">
+
             <div class="mb-3">
                 <label for="descripcion" class="form-label">Nombre:</label>
                 <input type="text" name="nombre" id="nombre" class="form-control" required>
